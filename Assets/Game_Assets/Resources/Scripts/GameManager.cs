@@ -87,9 +87,9 @@ public class GameManager : MonoBehaviour {
             FindObjectOfType<HUDController>().changeScene("Game");
 			PlayerPrefs.SetInt ("phaseCount",PlayerPrefs.GetInt ("phaseCount") + 1);
             if(moves != 0)
-			PlayerPrefs.SetInt("actualPoints", Mathf.RoundToInt((baseS*10)/moves) +  PlayerPrefs.GetInt ("actualPoints"));
+			PlayerPrefs.SetInt("actualPoints", Mathf.RoundToInt((baseS*4)-moves) +  PlayerPrefs.GetInt ("actualPoints"));
             else
-            PlayerPrefs.SetInt("actualPoints", Mathf.RoundToInt((baseS * 10)) + PlayerPrefs.GetInt("actualPoints"));
+            PlayerPrefs.SetInt("actualPoints", Mathf.RoundToInt((baseS * 4)) + PlayerPrefs.GetInt("actualPoints"));
 		}
 	}
 	/*
@@ -100,18 +100,26 @@ public class GameManager : MonoBehaviour {
 	IEnumerator timerTilEnd(float time)
 	{
 		yield return new WaitForSeconds (time);
-        FindObjectOfType<HUDController>().changeScene("Record");
+        FindObjectOfType<HUDController>().changeScene("Submit");
 	}
 
 
 	void Start () {
 		//PlayerPrefs.SetInt ("phaseCount",0);
 		//PlayerPrefs.SetInt ("actualPoints", 0);
-		baseS = (PlayerPrefs.GetInt ("phaseCount") / 3) <= 13 ? (PlayerPrefs.GetInt ("phaseCount") / 3):13;
-		baseS = (baseS < 3) ? 3 :baseS;
-		baseS = (baseS % 2 == 0) ? baseS + 1 : baseS;
+		baseS = (PlayerPrefs.GetInt ("phaseCount") <= 3)?3:
+			(PlayerPrefs.GetInt ("phaseCount") <= 6)?5:(PlayerPrefs.GetInt ("phaseCount") <= 9)?7:
+				(PlayerPrefs.GetInt ("phaseCount") <= 12)?9:(PlayerPrefs.GetInt ("phaseCount") <= 15)?11:
+				(PlayerPrefs.GetInt ("phaseCount") >= 18)?13:13;
         //Debug.LogError((PlayerPrefs.GetInt("phaseCount") / 3) + ":" + PlayerPrefs.GetInt("phaseCount") + ":" + baseS);
-		avaibleColor = new Color[7]{Color.blue,Color.green,Color.magenta,Color.gray,Color.cyan,Color.black,Color.white};
+		avaibleColor = new Color[7]{
+			Color.blue,
+			new Color(22f/255f,160f/255f,133f/255f,1f),
+			new Color(52f/255f,52f/255f,219f/255f,1f),
+			new Color(231f/255f,76f/255f,60f/255f,1f),
+			new Color(155f/255f,89f/255f,182f/255f,1f),
+			new Color(189f/255f,195f/255f,199f/255f,1f),
+			new Color(211f/255f,84f/255f,0f,1f)};
 		getNumOfTri (baseS,0);
 		InstantiateTriangles (baseS, 0);
 		cameraFocus ();

@@ -14,11 +14,11 @@ public class HUDController : MonoBehaviour {
 
     void Start()
     {
-        if (Application.loadedLevelName == "Game")
-        {
-            GameObject.FindGameObjectWithTag("UIScore").GetComponent<Text>().text = "Score\r\n" + PlayerPrefs.GetInt("actualPoints").ToString();
-            StartCoroutine(atualizeHUD(0.5f));
-        }
+        if (Application.loadedLevelName == "Game") {
+						GameObject.FindGameObjectWithTag ("UIScore").GetComponent<Text> ().text = "Score\r\n" + PlayerPrefs.GetInt ("actualPoints").ToString ();
+						StartCoroutine (atualizeHUD (0.5f));
+		} else if (Application.loadedLevelName == "Menu")
+		initScore ();
     }
 
     IEnumerator atualizeHUD(float time)
