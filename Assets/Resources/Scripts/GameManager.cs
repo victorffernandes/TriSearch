@@ -16,6 +16,20 @@ public class GameManager : MonoBehaviour {
     private int numOfRows;
     public  float timeLimit;
 
+	public int getDifColorFromArray(List<Color> c, Color color)
+	{
+		int i = 0;
+			do{
+				  if(color != c[i])
+				{
+					return i;
+				}
+				i++;
+			}while(i < c.Count);
+		return Random.Range(0,c.Count);
+	}
+
+
 	public static bool checkIfCompleteRow(int row,Color c)
 	{
 		int selected = 0;
@@ -32,26 +46,29 @@ public class GameManager : MonoBehaviour {
 
 
 	public void InstantiateTriangles (float baseSize, int faixa ) {
-		bool isUpsideDown = false;
+		List<GameObject> rowTri = new List<GameObject>();
+ 		bool isUpsideDown = false;
 		GameObject f = (GameObject)Instantiate (faixaObj, new Vector2(0,faixa *(1.24f)), Quaternion.identity);
 		f.GetComponent<Row>().row = faixa;
 		f.GetComponent<SpriteRenderer> ().color = avaibleColor [faixa];
 		f.name = "Faixa :" + faixa;
+		//First Triangle
+		//end up here
 		for (int i = 0; i < baseSize; i++) {
-
 			GameObject g = (GameObject)Instantiate(tri, new Vector2(
 				tri.transform.localScale.x * i * 2.5f + (faixa * .71f),
                 tri.transform.localScale.y * faixa * 4.3f),
                	Quaternion.identity);
-			int random = Random.Range(0,colors.Count);
-			g.GetComponent<SpriteRenderer>().color = colors[random];
-			colors.RemoveAt(random);
+			//int dif = getDifColorFromArray(colors,avaibleColor [faixa]);
+			//g.GetComponent<SpriteRenderer>().color = colors[dif];
+			//colors.RemoveAt(dif);
             g.GetComponent<Triangle>().faixa = faixa;
             g.name = "Triangle" + faixa + ":" + i;
 			if (isUpsideDown) {
 				g.GetComponent<Transform>().localScale = new Vector2(g.GetComponent<Transform>().localScale.x,g.GetComponent<Transform>().localScale.y*-1);  /*Vira ele aqui*/  
 			}
 			isUpsideDown = !isUpsideDown;
+			rowTri.Add(g);
 		}
 		if (baseSize != 1) {
 			InstantiateTriangles (baseSize - 2, faixa + 1);
