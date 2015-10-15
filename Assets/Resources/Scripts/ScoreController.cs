@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine.UI;
 
 public class ScoreController : MonoBehaviour {
-
 	/*
 	 * Original = http://trisearch.16mb.com/server/
 	 * Test = http://trisearch.avellar.c9.io/server/
