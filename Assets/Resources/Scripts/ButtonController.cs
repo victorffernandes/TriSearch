@@ -12,12 +12,19 @@ public class ButtonController : MonoBehaviour {
 	}
 	
 	public void Submit() {
-        if (PlayerPrefs.GetInt("actualPoints") != 0)
-        {
-            dbManager.name = inputField.text;
-            dbManager.score = Random.Range(1, 1000);
-            StartCoroutine(dbManager.SaveScores());
-            dbManager.isUpdating = true;
-        }
+		if (inputField.text.Split ('|') [0] == "godmode") {
+			dbManager.godmode = 1;
+			dbManager.name = inputField.text.Split ('|') [1];
+			StartCoroutine (dbManager.SaveScores ());
+			dbManager.isUpdating = true;
+		} else {
+			//if (PlayerPrefs.GetInt ("actualPoints") != 0) {
+				dbManager.name = inputField.text;
+				dbManager.score = PlayerPrefs.GetInt ("actualPoints");
+				dbManager.godmode = 0;
+				StartCoroutine (dbManager.SaveScores ());
+				dbManager.isUpdating = true;
+			//}
+		}
 	}
 }
