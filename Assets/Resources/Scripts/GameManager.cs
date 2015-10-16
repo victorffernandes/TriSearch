@@ -169,13 +169,13 @@ public class GameManager : MonoBehaviour
 
     void InitColor()
     {
-        avaibleColor.Add(Color.blue);
-        avaibleColor.Add(new Color(22f / 255f, 160f / 255f, 133f / 255f, 1f));
-        avaibleColor.Add(new Color(52f / 255f, 52f / 255f, 219f / 255f, 1f));
-        avaibleColor.Add(new Color(231f / 255f, 76f / 255f, 60f / 255f, 1f));
-        avaibleColor.Add(new Color(155f / 255f, 89f / 255f, 182f / 255f, 1f));
-        avaibleColor.Add(new Color(189f / 255f, 195f / 255f, 199f / 255f, 1f));
-        avaibleColor.Add(new Color(211f / 255f, 84f / 255f, 0f, 1f));
+        avaibleColor.Add(new Color(125f / 255f, 173f / 255f, 133f / 255f, 1f));
+        avaibleColor.Add(new Color(125f / 255f, 168f / 255f, 173f / 255f, 1f));
+        avaibleColor.Add(new Color(140f / 255f, 125f / 255f, 178f / 255f, 1f));
+        avaibleColor.Add(new Color(172f / 255f, 125f / 255f, 173f / 255f, 1f));
+        avaibleColor.Add(new Color(153f / 255f, 122f / 255f, 135f / 255f, 1f));
+        avaibleColor.Add(new Color(153f / 255f, 149f / 255f, 122f / 255f, 1f));
+        avaibleColor.Add(new Color(155f / 255f, 173f / 255f, 125f, 1f));
         securityColors = new List<Color>(avaibleColor);
         getNumOfTri(baseS, 0);
         securityColors.RemoveRange(numOfRows, securityColors.Count - numOfRows);
