@@ -14,8 +14,8 @@ public class GameManager : MonoBehaviour
     List<Color> avaibleColor = new List<Color>();//All the avaible colors in the piramid;
     Dictionary<int, float> res = new Dictionary<int, float>();//A dictionary that have all the camera viewport size for different piramid sizes
     public int moves = 0;// Moves Count
-    private int baseS;// Number of triangles on the base of the piramid
-    private int numOfRows;// Number of bands and piramid's level.
+    public static int baseS;// Number of triangles on the base of the piramid
+	public static int numOfRows;// Number of bands and piramid's level.
     public float timeLimit;// Time to finish phase
 
     public List<Color> castListTo(List<GameObject> b)
@@ -169,13 +169,14 @@ public class GameManager : MonoBehaviour
 
     void InitColor()
     {
-        avaibleColor.Add(new Color(125f / 255f, 173f / 255f, 133f / 255f, 1f));
-        avaibleColor.Add(new Color(125f / 255f, 168f / 255f, 173f / 255f, 1f));
-        avaibleColor.Add(new Color(140f / 255f, 125f / 255f, 178f / 255f, 1f));
-        avaibleColor.Add(new Color(172f / 255f, 125f / 255f, 173f / 255f, 1f));
-        avaibleColor.Add(new Color(153f / 255f, 122f / 255f, 135f / 255f, 1f));
-        avaibleColor.Add(new Color(153f / 255f, 149f / 255f, 122f / 255f, 1f));
-        avaibleColor.Add(new Color(155f / 255f, 173f / 255f, 125f, 1f));
+		//avaibleColor.Add(new Color(125f / 255f, 173f / 255f, 133f / 255f, 1f));
+		//avaibleColor.Add(new Color(125f / 255f, 168f / 255f, 173f / 255f, 1f));
+		//avaibleColor.Add(new Color(140f / 255f, 125f / 255f, 178f / 255f, 1f));
+		//avaibleColor.Add(new Color(172f / 255f, 125f / 255f, 173f / 255f, 1f));
+		//avaibleColor.Add(new Color(153f / 255f, 122f / 255f, 135f / 255f, 1f));
+		//avaibleColor.Add(new Color(153f / 255f, 149f / 255f, 122f / 255f, 1f));
+        //avaibleColor.Add(new Color(155f / 255f, 173f / 255f, 125f, 1f));
+		avaibleColor = ColorUtils.GetTones (Color.red, 7);
         securityColors = new List<Color>(avaibleColor);
         getNumOfTri(baseS, 0);
         securityColors.RemoveRange(numOfRows, securityColors.Count - numOfRows);
@@ -205,5 +206,10 @@ public class GameManager : MonoBehaviour
         Camera.main.orthographicSize = res[baseS];
         timeLimit = baseS * 5;
         StartCoroutine(timerTilEnd(timeLimit));
+
+		for (int i = 0; i < numOfRows; i++) {
+			if(checkIfCompleteRow(i,avaibleColor[i]))Application.LoadLevel("Game");
+		}
+
     }
 }

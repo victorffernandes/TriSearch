@@ -12,7 +12,6 @@ public class Triangle : Default {
 
 	public override void OnTouch(object t)
 	{
-		if(Input.GetMouseButtonDown(0)) {
             if(FindObjectOfType<GameManager>().selected == null) {
                 Debug.Log("Added to selected");
                 FindObjectOfType<GameManager>().selected = this.gameObject;
@@ -30,7 +29,6 @@ public class Triangle : Default {
                 FindObjectOfType<GameManager>().selected = this.gameObject; 
 				FindObjectOfType<GameManager>().selected.GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("Sprites/SelectedTriangle");
             }
-        }
 	}
     
 	public bool CheckTriangles (GameObject tri) {

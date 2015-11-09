@@ -15,7 +15,7 @@ public abstract class Default : MonoBehaviour {
 			}
 		} else {
 			Vector2 point = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
-			if (this.gameObject.GetComponent<PolygonCollider2D>().OverlapPoint(Camera.main.ScreenToWorldPoint(point)))
+			if (this.gameObject.GetComponent<PolygonCollider2D>().OverlapPoint(Camera.main.ScreenToWorldPoint(point)) && Input.GetMouseButton(0))
 				OnTouch(Input.mousePosition);
 		}
 	}
