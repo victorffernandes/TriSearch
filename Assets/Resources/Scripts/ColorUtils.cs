@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+﻿ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
@@ -84,10 +84,7 @@ public class ColorHSV {
 }
 
 public class ColorUtils: MonoBehaviour {
-	
-	public static int TonesSize;
-	public static Color TonesColor;
-	public static float TonesIncr;
+	public  static float TonesIncr = 0.14f;
 	
 	/*void Update() {
 		List<Color> colors = new List<Color> ();
@@ -240,6 +237,7 @@ public class ColorUtils: MonoBehaviour {
 		_c.s -= size / 10;
 		
 		for (int i = 0; i < size; i++) {
+			//_c.s -= TonesIncr;
 			_c.s -= TonesIncr;
 			colors.Add(HSVtoRGB(_c));
 		}

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
-
+	public  static Color TonesColor;
     public GameObject selected = null;//The selected triangle variable;
     public GameObject faixaObj;//The band prefab gameObj;
     public GameObject tri;//The triangle prefab  gameObj;
@@ -176,7 +176,10 @@ public class GameManager : MonoBehaviour
 		//avaibleColor.Add(new Color(153f / 255f, 122f / 255f, 135f / 255f, 1f));
 		//avaibleColor.Add(new Color(153f / 255f, 149f / 255f, 122f / 255f, 1f));
         //avaibleColor.Add(new Color(155f / 255f, 173f / 255f, 125f, 1f));
-		avaibleColor = ColorUtils.GetTones (Color.red, 7);
+		List<Color> colors = ColorUtils.GetTones (TonesColor, 7);
+		foreach (Color c in colors)
+		avaibleColor.Add (c);
+
         securityColors = new List<Color>(avaibleColor);
         getNumOfTri(baseS, 0);
         securityColors.RemoveRange(numOfRows, securityColors.Count - numOfRows);
@@ -192,9 +195,9 @@ public class GameManager : MonoBehaviour
             (PlayerPrefs.GetInt("phaseCount") <= 6) ? 5 : (PlayerPrefs.GetInt("phaseCount") <= 9) ? 7 :
                 (PlayerPrefs.GetInt("phaseCount") <= 12) ? 9 : (PlayerPrefs.GetInt("phaseCount") <= 15) ? 11 :
                 (PlayerPrefs.GetInt("phaseCount") >= 18) ? 13 : 13;
+		//baseS = 13;
         //Debug.LogError((PlayerPrefs.GetInt("phaseCount") / 3) + ":" + PlayerPrefs.GetInt("phaseCount") + ":" + baseS);
         InitColor();
-        Debug.LogWarning(securityColors.Count);
         InstantiateTriangles(baseS, 0);
         cameraFocus();
         res.Add(13, 9.04f);

@@ -6,6 +6,23 @@ public class HUDController : MonoBehaviour {
 
 	public GameObject p;
 
+
+	public void SelectColor(string color)
+	{
+		switch (color) {
+
+		case "red":
+			GameManager.TonesColor = Color.red;
+			break;
+		case "blue":
+			GameManager.TonesColor = Color.blue;
+			break;
+		case "green":
+			GameManager.TonesColor = Color.green;
+			break;
+		}
+	}
+
     public void initScore()
     {
         PlayerPrefs.SetInt("actualPoints", 0);
@@ -14,11 +31,11 @@ public class HUDController : MonoBehaviour {
 
     void Start()
     {
-        if (Application.loadedLevelName == "Game") {
-						GameObject.FindGameObjectWithTag ("UIScore").GetComponent<Text> ().text = "Score\r\n" + PlayerPrefs.GetInt ("actualPoints").ToString ();
-						StartCoroutine (atualizeHUD (0.5f));
-		} else if (Application.loadedLevelName == "Menu")
-		initScore ();
+// if (Application.loadedLevelName == "Game" && false) {
+//						GameObject.FindGameObjectWithTag ("UIScore").GetComponent<Text> ().text = "Score\r\n" + PlayerPrefs.GetInt ("actualPoints").ToString ();
+//						StartCoroutine (atualizeHUD (0.5f));
+//		} else if (Application.loadedLevelName == "Menu")
+//		initScore ();
     }
 
     IEnumerator atualizeHUD(float time)
