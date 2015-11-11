@@ -227,19 +227,28 @@ public class ColorUtils: MonoBehaviour {
 	}
 	
 	public static List <Color> GetTones(Color color, int size) {
-		
-		//color = TonesColor;
-		//size = TonesSize;
-		
-		
 		ColorHSV _c = RGBtoHSV(color);
 		List <Color> colors = new List <Color> ();
 		_c.s -= size / 10;
 		
 		for (int i = 0; i < size; i++) {
-			//_c.s -= TonesIncr;
 			_c.s -= TonesIncr;
 			colors.Add(HSVtoRGB(_c));
+		}
+		
+		return colors;
+		
+	}
+
+	public static List <Color> RandomColors(int size) {	
+		ColorHSV _c = new ColorHSV(0, 1, 1);
+		List <Color> colors = new List <Color> ();
+		int colorsDet = Mathf.RoundToInt (360 / size);
+		
+		for (int i = 0; i < size; i++) {
+			_c.h += colorsDet;
+			colors.Add(HSVtoRGB(_c));
+			Debug.Log(HSVtoRGB(_c));
 		}
 		
 		return colors;

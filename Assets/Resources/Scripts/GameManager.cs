@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class GameManager : MonoBehaviour
 {
 	public  static Color TonesColor;
+	public static bool DefaultColors = false;
     public GameObject selected = null;//The selected triangle variable;
     public GameObject faixaObj;//The band prefab gameObj;
     public GameObject tri;//The triangle prefab  gameObj;
@@ -169,14 +170,16 @@ public class GameManager : MonoBehaviour
 
     void InitColor()
     {
-		//avaibleColor.Add(new Color(125f / 255f, 173f / 255f, 133f / 255f, 1f));
-		//avaibleColor.Add(new Color(125f / 255f, 168f / 255f, 173f / 255f, 1f));
-		//avaibleColor.Add(new Color(140f / 255f, 125f / 255f, 178f / 255f, 1f));
-		//avaibleColor.Add(new Color(172f / 255f, 125f / 255f, 173f / 255f, 1f));
-		//avaibleColor.Add(new Color(153f / 255f, 122f / 255f, 135f / 255f, 1f));
-		//avaibleColor.Add(new Color(153f / 255f, 149f / 255f, 122f / 255f, 1f));
-        //avaibleColor.Add(new Color(155f / 255f, 173f / 255f, 125f, 1f));
-		List<Color> colors = ColorUtils.GetTones (TonesColor, 7);
+		List<Color> colors = new List<Color>();
+		if (DefaultColors) {
+			colors.Add (new Color (125f / 255f, 173f / 255f, 133f / 255f, 1f));
+			colors.Add (new Color (125f / 255f, 168f / 255f, 173f / 255f, 1f));
+			colors.Add (new Color (140f / 255f, 125f / 255f, 178f / 255f, 1f));
+			colors.Add (new Color (172f / 255f, 125f / 255f, 173f / 255f, 1f));
+			colors.Add (new Color (153f / 255f, 122f / 255f, 135f / 255f, 1f));
+			colors.Add (new Color (153f / 255f, 149f / 255f, 122f / 255f, 1f));
+			colors.Add (new Color (155f / 255f, 173f / 255f, 125f, 1f));
+		} else colors = ColorUtils.GetTones (TonesColor, 7);
 		foreach (Color c in colors)
 		avaibleColor.Add (c);
 

@@ -5,7 +5,8 @@ using System.Collections;
 public class HUDController : MonoBehaviour {
 
 	public GameObject p;
-
+	private ColorHSV rainbowButton = new ColorHSV (0, 1, 1);
+	private bool gameModes = false;
 
 	public void SelectColor(string color)
 	{
@@ -19,6 +20,9 @@ public class HUDController : MonoBehaviour {
 			break;
 		case "green":
 			GameManager.TonesColor = Color.green;
+			break;
+		case "colors":
+			GameManager.DefaultColors = true;
 			break;
 		}
 	}
@@ -37,6 +41,12 @@ public class HUDController : MonoBehaviour {
 //		} else if (Application.loadedLevelName == "Menu")
 //		initScore ();
     }
+
+	void Update() {	
+		rainbowButton.h += (rainbowButton.h < 360) ? 1 * Time.deltaTime : 0;
+		if(gameModes) 
+			GameObject.Find ("Colors").GetComponent<Image> ().color = ColorUtils.HSVtoRGB (rainbowButton);
+	}
 
     IEnumerator atualizeHUD(float time)
     {
@@ -64,4 +74,8 @@ public class HUDController : MonoBehaviour {
         yield return new WaitForSeconds(0.5f);
         Application.LoadLevel(g);
     }
+
+	public void changeGameMode(bool check) {
+		gameModes = check;
+	}
 }
