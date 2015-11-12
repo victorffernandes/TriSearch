@@ -99,13 +99,13 @@ public class ScoreController : MonoBehaviour {
 			WWW webRequest = new WWW (db_url + "saveScore.php", form);
 			yield return webRequest;
 		} else {
-			yield return null;
+			yield return SaveScores();
 			error.GetComponent<Animator> ().Play ("ConnectionStatus_Error");
 		}
 	}
 
 	IEnumerator LoadScores() {
-		if (CheckConnection(db_url + "saveScore.php")) {
+		if (CheckConnection(db_url + "loadScore.php")) {
 			error.GetComponent<Animator> ().Play ("ConnectionStatus_Loading");
 			WWW webRequest = new WWW (db_url + "loadScore.php");
 			yield return webRequest;

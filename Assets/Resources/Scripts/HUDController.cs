@@ -10,6 +10,7 @@ public class HUDController : MonoBehaviour {
 
 	public void SelectColor(string color)
 	{
+		GameManager.DefaultColors = false;
 		switch (color) {
 
 		case "red":
