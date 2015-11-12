@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class GameManager : MonoBehaviour
 {
 	public  static Color TonesColor;
+	public static bool DefaultColors = false;
     public GameObject selected = null;//The selected triangle variable;
     public GameObject faixaObj;//The band prefab gameObj;
     public GameObject tri;//The triangle prefab  gameObj;
@@ -169,14 +170,16 @@ public class GameManager : MonoBehaviour
 
     void InitColor()
     {
-		//avaibleColor.Add(new Color(125f / 255f, 173f / 255f, 133f / 255f, 1f));
-		//avaibleColor.Add(new Color(125f / 255f, 168f / 255f, 173f / 255f, 1f));
-		//avaibleColor.Add(new Color(140f / 255f, 125f / 255f, 178f / 255f, 1f));
-		//avaibleColor.Add(new Color(172f / 255f, 125f / 255f, 173f / 255f, 1f));
-		//avaibleColor.Add(new Color(153f / 255f, 122f / 255f, 135f / 255f, 1f));
-		//avaibleColor.Add(new Color(153f / 255f, 149f / 255f, 122f / 255f, 1f));
-        //avaibleColor.Add(new Color(155f / 255f, 173f / 255f, 125f, 1f));
-		List<Color> colors = ColorUtils.GetTones (TonesColor, 7);
+		List<Color> colors = new List<Color>();
+		if (DefaultColors) {
+			colors.Add (new Color (245f / 255f, 153f / 255f, 24f / 255f, 1f));
+			colors.Add (new Color (255f / 255f, 239f / 255f, 43f / 255f, 1f));
+			colors.Add (new Color (88f / 255f, 193f / 255f, 212f / 255f, 1f));
+			colors.Add (new Color (87f / 255f, 38f / 255f, 122f / 255f, 1f));
+			colors.Add (new Color (231f / 255f, 41f / 255f, 123f / 255f, 1f));
+			colors.Add (new Color (230f / 255f,55f / 255f, 31f / 255f, 1f));
+			colors.Add (new Color (145f / 255f, 206f / 255f, 195f/255f, 1f));
+		} else colors = ColorUtils.GetTones (TonesColor, 7);
 		foreach (Color c in colors)
 		avaibleColor.Add (c);
 
@@ -195,16 +198,16 @@ public class GameManager : MonoBehaviour
             (PlayerPrefs.GetInt("phaseCount") <= 6) ? 5 : (PlayerPrefs.GetInt("phaseCount") <= 9) ? 7 :
                 (PlayerPrefs.GetInt("phaseCount") <= 12) ? 9 : (PlayerPrefs.GetInt("phaseCount") <= 15) ? 11 :
                 (PlayerPrefs.GetInt("phaseCount") >= 18) ? 13 : 13;
-		//baseS = 13;
+		//baseS =13;
         //Debug.LogError((PlayerPrefs.GetInt("phaseCount") / 3) + ":" + PlayerPrefs.GetInt("phaseCount") + ":" + baseS);
         InitColor();
         InstantiateTriangles(baseS, 0);
         cameraFocus();
         res.Add(13, 9.04f);
         res.Add(11, 7.73f);
-        res.Add(9, 6.45f);
-        res.Add(7, 5.19f);
-        res.Add(5, 4.19f);
+        res.Add(9, 6.55f);
+        res.Add(7, 5.28f);
+        res.Add(5, 4.07f);
         res.Add(3, 2.82f);
         Camera.main.orthographicSize = res[baseS];
         timeLimit = baseS * 5;

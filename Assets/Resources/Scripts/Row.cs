@@ -22,7 +22,7 @@ public class Row : MonoBehaviour {
 	void Update () {
 		if (GameManager.checkIfCompleteRow (row, col)) {
 			destroyRow();
-			PlayerPrefs.SetInt("actualPoints", Mathf.RoundToInt((GameManager.baseS - (row *2))) + PlayerPrefs.GetInt("actualPoints"));
+			PlayerPrefs.SetInt("actualPoints", 2*((GameManager.baseS - (row *2))) + PlayerPrefs.GetInt("actualPoints"));
 		}
 	}
 }

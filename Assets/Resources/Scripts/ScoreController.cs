@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Net;
 using System.Collections;
 using UnityEngine.UI;
 
@@ -23,7 +24,8 @@ public class ScoreController : MonoBehaviour {
 		isUpdating = true;
 		isUpdatingScore = true;
 		db_url = "http://trisearch.16mb.com/server/";
-		error.SetActive (false);
+
+		error.GetComponent<Animator>().Play("ConnectionStatus_Loading");
 	}
 
 	void Update() {
@@ -46,29 +48,79 @@ public class ScoreController : MonoBehaviour {
 					scoreList.text += scoresText [i] + "\n";
 				}
 				isUpdatingScore = false;
-				error.SetActive(false);
+				error.GetComponent<Animator>().Play("ConnectionStatus_Valid");
 			} else {
-				error.SetActive(true);
+				error.GetComponent<Animator>().Play("ConnectionStatus_Error");
 			}
 		}
 	}
 
-	public IEnumerator SaveScores() {
-		WWWForm form = new WWWForm();
-		form.AddField ("name", name);
-        form.AddField("score", score);
-		form.AddField ("godmode", godmode);
-		WWW webRequest = new WWW(db_url + "saveScore.php", form);
+	public static bool HasConnection()
+	{
+		try
+		{
+			using (var client = new WebClient())
+				using (var stream = new WebClient().OpenRead("http://www.google.com"))
+			{
+				return true;
+			}
+		}
+		catch
+		{
+			return false;
+		}
+	}
 
-		yield return webRequest;
+	bool CheckConnection(string URL)
+	{
+		try
+		{
+			HttpWebRequest request = (HttpWebRequest)WebRequest.Create(URL);
+			request.Timeout = 5000;
+			request.Credentials = CredentialCache.DefaultNetworkCredentials;
+			HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+			
+			if (response.StatusCode == HttpStatusCode.OK) return true;
+			else return false;
+		}
+		catch
+		{
+			return false;
+		}
+	}
+
+	public IEnumerator SaveScores() {
+		error.GetComponent<Animator>().Play("ConnectionStatus_Loading");
+		if (CheckConnection(db_url + "saveScore.php")) {
+			WWWForm form = new WWWForm ();
+			form.AddField ("name", name);
+			form.AddField ("score", score);
+			form.AddField ("godmode", godmode);
+			WWW webRequest = new WWW (db_url + "saveScore.php", form);
+			yield return webRequest;
+		} else {
+			yield return null;
+			error.GetComponent<Animator> ().Play ("ConnectionStatus_Error");
+		}
 	}
 
 	IEnumerator LoadScores() {
-		WWW webRequest = new WWW(db_url + "loadScore.php");
-		yield return webRequest;
-		scoresText = webRequest.text.Split('|');
-		isUpdating = false;
-		isUpdatingScore = true;
+		if (CheckConnection(db_url + "saveScore.php")) {
+			error.GetComponent<Animator> ().Play ("ConnectionStatus_Loading");
+			WWW webRequest = new WWW (db_url + "loadScore.php");
+			yield return webRequest;
+			scoresText = webRequest.text.Split ('|');
+			isUpdating = false;
+			isUpdatingScore = true;
+		} else {
+			yield return null;
+			error.GetComponent<Animator> ().Play ("ConnectionStatus_Error");
+		}
+	}
+
+	public void Refresh()
+	{
+		StartCoroutine (LoadScores());
 	}
 	
 }

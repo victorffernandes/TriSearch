@@ -5,7 +5,8 @@ using System.Collections;
 public class HUDController : MonoBehaviour {
 
 	public GameObject p;
-
+	private ColorHSV rainbowButton = new ColorHSV (0, 1, 1);
+	private bool gameModes = false;
 
 	public void SelectColor(string color)
 	{
@@ -20,6 +21,9 @@ public class HUDController : MonoBehaviour {
 		case "green":
 			GameManager.TonesColor = Color.green;
 			break;
+		case "colors":
+			GameManager.DefaultColors = true;
+			break;
 		}
 	}
 
@@ -31,18 +35,26 @@ public class HUDController : MonoBehaviour {
 
     void Start()
     {
-// if (Application.loadedLevelName == "Game" && false) {
-//						GameObject.FindGameObjectWithTag ("UIScore").GetComponent<Text> ().text = "Score\r\n" + PlayerPrefs.GetInt ("actualPoints").ToString ();
-//						StartCoroutine (atualizeHUD (0.5f));
-//		} else if (Application.loadedLevelName == "Menu")
-//		initScore ();
+ if (Application.loadedLevelName == "Game" ) {
+						GameObject.FindGameObjectWithTag ("UIScore").GetComponent<Text> ().text = PlayerPrefs.GetInt ("actualPoints").ToString ();
+						StartCoroutine (atualizeHUD (0.5f));
+		} else if (Application.loadedLevelName == "Menu")
+		initScore ();
     }
+
+	void Update() {	
+		rainbowButton.h += (rainbowButton.h < 360) ? 1 * Time.deltaTime : 0;
+		if(gameModes) 
+			GameObject.Find ("Colors").GetComponent<Image> ().color = ColorUtils.HSVtoRGB (rainbowButton);
+	}
 
     IEnumerator atualizeHUD(float time)
     {
         yield return new WaitForSeconds(time);
-        GameObject.FindGameObjectWithTag("UITextMoves").GetComponent<Text>().text = "Moves\r\n" + FindObjectOfType<GameManager>().moves.ToString();
-        GameObject.FindGameObjectWithTag("UITime").GetComponent<Text>().text = "Time\r\n" + (Mathf.RoundToInt(FindObjectOfType<GameManager>().timeLimit - Time.timeSinceLevelLoad)).ToString();
+		Debug.LogWarning("It's running!");
+        GameObject.FindGameObjectWithTag("UITextMoves").GetComponent<Text>().text = FindObjectOfType<GameManager>().moves.ToString();
+        GameObject.FindGameObjectWithTag("UITime").GetComponent<Text>().text = (Mathf.RoundToInt(FindObjectOfType<GameManager>().timeLimit - Time.timeSinceLevelLoad)).ToString();
+		GameObject.FindGameObjectWithTag("UIScore").GetComponent<Text>().text = PlayerPrefs.GetInt("actualPoints").ToString();
         StartCoroutine(atualizeHUD(0.5f));
     }
 
@@ -64,4 +76,8 @@ public class HUDController : MonoBehaviour {
         yield return new WaitForSeconds(0.5f);
         Application.LoadLevel(g);
     }
+
+	public void changeGameMode(bool check) {
+		gameModes = check;
+	}
 }
