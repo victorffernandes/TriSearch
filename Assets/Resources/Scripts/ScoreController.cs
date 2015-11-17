@@ -55,22 +55,6 @@ public class ScoreController : MonoBehaviour {
 		}
 	}
 
-	public static bool HasConnection()
-	{
-		try
-		{
-			using (var client = new WebClient())
-				using (var stream = new WebClient().OpenRead("http://www.google.com"))
-			{
-				return true;
-			}
-		}
-		catch
-		{
-			return false;
-		}
-	}
-
 	bool CheckConnection(string URL)
 	{
 		try

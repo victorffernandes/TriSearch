@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using System.Text.RegularExpressions;
 
 public class ButtonController : MonoBehaviour {
 
@@ -20,14 +21,17 @@ public class ButtonController : MonoBehaviour {
 			StartCoroutine (dbManager.SaveScores ());
 			dbManager.isUpdating = true;
 		} else if(canSend){
-			//if (PlayerPrefs.GetInt ("actualPoints") != 0) {
+			Match match = Regex.Match(inputField.text, @"^[a-zA-Z0-9]*$", RegexOptions.IgnoreCase);
+			if (match.Success) {
 				dbManager.name = inputField.text;
 				dbManager.score = PlayerPrefs.GetInt ("actualPoints");
 				dbManager.godmode = 0;
 				StartCoroutine (dbManager.SaveScores ());
 				dbManager.isUpdating = true;
 				canSend = false;
-			//}
+			} else {
+				Debug.Log(":c");
+			}
 		}
 	}
 }
