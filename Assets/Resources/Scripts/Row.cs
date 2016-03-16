@@ -21,7 +21,7 @@ public class Row : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		if (GameManager.checkIfCompleteRow (row, col)) {
-			destroyRow();
+			//destroyRow();
 			PlayerPrefs.SetInt("actualPoints", 2*((GameManager.baseS - (row *2))) + PlayerPrefs.GetInt("actualPoints"));
 		}
 	}
