@@ -1,7 +1,10 @@
-﻿using UnityEngine;
+﻿﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+
+//1 XSCALE = 2.51 XPOS	
+//1 YSCALE = 4.34 YPOS
 
 public class GameManager : MonoBehaviour
 {
@@ -18,8 +21,13 @@ public class GameManager : MonoBehaviour
     public static int baseS;// Number of triangles on the base of the piramid
 	public static int numOfRows;// Number of bands and piramid's level.
     public float timeLimit;// Time to finish phase
+	public float w_Triangle;
+	public float h_Triangle;
+	const float X_SCALE = 2.51f;
+	const float Y_SCALE = 4.34f;
 
-    public List<Color> castListTo(List<GameObject> b)
+    
+	List<Color> castListTo(List<GameObject> b)
     {
         List<Color> result = new List<Color>();
         foreach (GameObject g in b)
@@ -37,8 +45,8 @@ public class GameManager : MonoBehaviour
         {
             if (color != c[i])
             {
-                Debug.LogWarning("Worked!");
-                return i;
+                //Debug.LogWarning("Worked!");
+                return i;	
             }
             i--;
         } while (i > 0);
@@ -72,22 +80,22 @@ public class GameManager : MonoBehaviour
         List<GameObject> rowTri = new List<GameObject>();
         bool isUpsideDown = false;
         //Instantiate de background colorful band
-        GameObject f = (GameObject)Instantiate(faixaObj, new Vector2(0, faixa * (1.24f)), Quaternion.identity);
+		GameObject f = (GameObject)Instantiate(faixaObj, new Vector2(0,(faixa*h_Triangle*Y_SCALE)), Quaternion.identity);
         f.GetComponent<Row>().row = faixa;
         f.GetComponent<SpriteRenderer>().color = avaibleColor[faixa];
         f.name = "Faixa :" + faixa;
-        //--
+		f.transform.localScale = new Vector3 (f.transform.localScale.x,Y_SCALE* h_Triangle*f.transform.localScale.y, 0);
         for (int i = 0; i < baseSize; i++)
         {
+			//Debug.LogWarning("Runned");
             GameObject g = (GameObject)Instantiate(tri, new Vector2(
-                tri.transform.localScale.x * i * 2.5f + (faixa * .71f),
-                tri.transform.localScale.y * faixa * 4.3f),
+				i * (w_Triangle * X_SCALE ) + (faixa*w_Triangle*X_SCALE),
+				(faixa*h_Triangle*Y_SCALE)),
                 Quaternion.identity);
-            //int dif = getDifColorFromArray(colors,avaibleColor [faixa]);
-            //g.GetComponent<SpriteRenderer>().color = colors[dif];
-            //colors.RemoveAt(dif);
+			g.transform.localScale = new Vector3((tri.transform.localScale.x * w_Triangle),
+			                                      (tri.transform.localScale.y *h_Triangle),0);
             g.GetComponent<Triangle>().faixa = faixa;
-            g.name = "Triangle" + faixa + ":" + i;
+            g.name = "Triangle:" + faixa + ":" + i;
             if (isUpsideDown)
             {
                 g.GetComponent<Transform>().localScale = new Vector2(g.GetComponent<Transform>().localScale.x, g.GetComponent<Transform>().localScale.y * -1);  /*Vira ele aqui*/
@@ -100,12 +108,12 @@ public class GameManager : MonoBehaviour
         rowTri[j].GetComponent<SpriteRenderer>().color = securityColors[n];
         securityColors.RemoveAt(n);
         //Set triangles color
-        foreach (GameObject tri in rowTri)
+        foreach (GameObject t in rowTri)
         {
-            if (tri != rowTri[j])
+            if (t != rowTri[j])
             {
                 int i = Random.Range(0, randomColors.Count);
-                tri.GetComponent<SpriteRenderer>().color = randomColors[i];
+				t.GetComponent<SpriteRenderer>().color = Color.red;
                 randomColors.RemoveAt(i);
             }
         }
@@ -137,10 +145,16 @@ public class GameManager : MonoBehaviour
 
     public void cameraFocus()
     {
-        int t = ((numOfRows - 1) / 2);
-        string name = "Triangle" + ((numOfRows - 1) / 2) + ":" + ((int)baseS - (2 * (t))) / 2;
-        Camera.main.transform.position = GameObject.Find(name).transform.position;
-        Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, -0.95f - (0.05f / numOfRows), -10f);
+		Vector3 zeroOne = Camera.main.ViewportToWorldPoint (new Vector3 (0, 1, 0));
+		Vector3 oneOne = Camera.main.ViewportToWorldPoint (new Vector3 (1, 1, 0));
+
+		while (Mathf.Abs(oneOne.x - zeroOne.x) <= (baseS+1) * X_SCALE) {
+			Camera.main.orthographicSize += 0.02f;
+			zeroOne = Camera.main.ViewportToWorldPoint (new Vector3 (0, 1, 0));
+			oneOne = Camera.main.ViewportToWorldPoint (new Vector3 (1, 1, 0));
+		}	
+		Vector3 zeroZero = Camera.main.ViewportToWorldPoint (new Vector3 (0, 0, 0));
+		h_Triangle = Mathf.Abs ((oneOne.y - zeroZero.y)) / (Y_SCALE*(numOfRows+1));
     }
 
     void Update()
@@ -148,8 +162,7 @@ public class GameManager : MonoBehaviour
         if (FindObjectsOfType<Row>().Length == 0 && avaibleColor != null)
         {
             avaibleColor = null;
-            Debug.LogWarning("Runned");
-            FindObjectOfType<HUDController>().changeScene("Game");
+            //FindObjectOfType<HUDController>().changeScene("Game");
             PlayerPrefs.SetInt("phaseCount", PlayerPrefs.GetInt("phaseCount") + 1);
             if (moves != 0)
                 PlayerPrefs.SetInt("actualPoints", Mathf.RoundToInt((baseS * 4) - moves) + PlayerPrefs.GetInt("actualPoints"));
@@ -194,28 +207,32 @@ public class GameManager : MonoBehaviour
 
         //PlayerPrefs.SetInt ("phaseCount",0);
         //PlayerPrefs.SetInt ("actualPoints", 0);
-        baseS = (PlayerPrefs.GetInt("phaseCount") <= 3) ? 3 :
-            (PlayerPrefs.GetInt("phaseCount") <= 6) ? 5 : (PlayerPrefs.GetInt("phaseCount") <= 9) ? 7 :
-                (PlayerPrefs.GetInt("phaseCount") <= 12) ? 9 : (PlayerPrefs.GetInt("phaseCount") <= 15) ? 11 :
-                (PlayerPrefs.GetInt("phaseCount") >= 18) ? 13 : 13;
+       // baseS = (PlayerPrefs.GetInt("phaseCount") <= 3) ? 3 :
+         //   (PlayerPrefs.GetInt("phaseCount") <= 6) ? 5 : (PlayerPrefs.GetInt("phaseCount") <= 9) ? 7 :
+           //     (PlayerPrefs.GetInt("phaseCount") <= 12) ? 9 : (PlayerPrefs.GetInt("phaseCount") <= 15) ? 11 :
+             //   (PlayerPrefs.GetInt("phaseCount") >= 18) ? 13 : 13;
+		baseS = 7;
 		//baseS =13;
         //Debug.LogError((PlayerPrefs.GetInt("phaseCount") / 3) + ":" + PlayerPrefs.GetInt("phaseCount") + ":" + baseS);
-        InitColor();
+		InitColor();
+		cameraFocus ();
         InstantiateTriangles(baseS, 0);
-        cameraFocus();
+		int t = ((numOfRows - 1) / 2);
+		string name = "Triangle:" + ((numOfRows - 1) / 2) + ":" + ((int)baseS - (2 * (t))) / 2;
+		Camera.main.transform.position = GameObject.Find(name).transform.position + new Vector3(0,0,-10);
         res.Add(13, 9.04f);
         res.Add(11, 7.73f);
         res.Add(9, 6.55f);
         res.Add(7, 5.28f);
         res.Add(5, 4.07f);
         res.Add(3, 2.82f);
-        Camera.main.orthographicSize = res[baseS];
+        //Camera.main.orthographicSize = res[baseS];
         timeLimit = baseS * 5;
-        StartCoroutine(timerTilEnd(timeLimit));
+        //StartCoroutine(timerTilEnd(timeLimit));
 
 		for (int i = 0; i < numOfRows; i++) {
-			if(checkIfCompleteRow(i,avaibleColor[i]))Application.LoadLevel("Game");
+			//if(checkIfCompleteRow(i,avaibleColor[i]))Application.LoadLevel("Game");
 		}
 
-    }
+    }	
 }
