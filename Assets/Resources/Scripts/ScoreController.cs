@@ -75,12 +75,12 @@ public class ScoreController : MonoBehaviour {
 
 	public IEnumerator SaveScores() {
 		error.GetComponent<Animator>().Play("ConnectionStatus_Loading");
-		if (CheckConnection(db_url + "saveScore.php")) {
+		if (CheckConnection(db_url + "saveScore")) {
 			WWWForm form = new WWWForm ();
 			form.AddField ("name", name);
 			form.AddField ("score", score);
 			form.AddField ("godmode", godmode);
-			WWW webRequest = new WWW (db_url + "saveScore.php", form);
+			WWW webRequest = new WWW (db_url + "saveScore", form);
 			yield return webRequest;
 		} else {
 			yield return SaveScores();
@@ -89,9 +89,9 @@ public class ScoreController : MonoBehaviour {
 	}
 
 	IEnumerator LoadScores() {
-		if (CheckConnection(db_url + "loadScore.php")) {
+		if (CheckConnection(db_url + "loadScore")) {
 			error.GetComponent<Animator> ().Play ("ConnectionStatus_Loading");
-			WWW webRequest = new WWW (db_url + "loadScore.php");
+			WWW webRequest = new WWW (db_url + "loadScore");
 			yield return webRequest;
 			scoresText = webRequest.text.Split ('|');
 			isUpdating = false;
