@@ -1,4 +1,4 @@
-﻿﻿using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,6 +8,7 @@ using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
+	public static bool isPaused = false;
 	public  static Color TonesColor;
 	public static bool DefaultColors = false;
     public GameObject selected = null;//The selected triangle variable;
@@ -15,8 +16,7 @@ public class GameManager : MonoBehaviour
     public GameObject tri;//The triangle prefab  gameObj;
     List<Color> randomColors = new List<Color>();//An array that controls the triangles sequence thats doesnt need to be diferent;
     List<Color> securityColors = new List<Color>();//An array that controls the triangles sequence thats need to be diferent;
-    List<Color> avaibleColor = new List<Color>();//All the avaible colors in the piramid;
-    Dictionary<int, float> res = new Dictionary<int, float>();//A dictionary that have all the camera viewport size for different piramid sizes
+    public List<Color> avaibleColor = new List<Color>();//All the avaible colors in the piramid;
     public int moves = 0;// Moves Count
     public static int baseS;// Number of triangles on the base of the piramid
 	public static int numOfRows;// Number of bands and piramid's level.
@@ -84,7 +84,7 @@ public class GameManager : MonoBehaviour
         f.GetComponent<Row>().row = faixa;
         f.GetComponent<SpriteRenderer>().color = avaibleColor[faixa];
         f.name = "Faixa :" + faixa;
-		f.transform.localScale = new Vector3 (f.transform.localScale.x,Y_SCALE* h_Triangle*f.transform.localScale.y, 0);
+		f.transform.localScale = new Vector3 (f.transform.localScale.x,Y_SCALE* h_Triangle, 0);
         for (int i = 0; i < baseSize; i++)
         {
 			//Debug.LogWarning("Runned");
@@ -113,7 +113,7 @@ public class GameManager : MonoBehaviour
             if (t != rowTri[j])
             {
                 int i = Random.Range(0, randomColors.Count);
-				t.GetComponent<SpriteRenderer>().color = Color.red;
+				t.GetComponent<SpriteRenderer>().color = randomColors[i];
                 randomColors.RemoveAt(i);
             }
         }
@@ -157,12 +157,24 @@ public class GameManager : MonoBehaviour
 		h_Triangle = Mathf.Abs ((oneOne.y - zeroZero.y)) / (Y_SCALE*(numOfRows+1));
     }
 
+	public void cameraPositioning(){
+		int t = ((numOfRows - 1) / 2);
+		string name = "Triangle:" + ((numOfRows - 1) / 2) + ":" + ((int)baseS - (2 * (t))) / 2;
+		Camera.main.transform.position = GameObject.Find(name).transform.position + new Vector3(0,0,-10);
+		Vector3 oo = Camera.main.ViewportToWorldPoint (new Vector3 (1, 1, 0));
+		Vector3 lt = GameObject.Find("Triangle:"+(numOfRows-1)+":0").transform.position;
+		float dft = Mathf.Abs (oo.y) - Mathf.Abs (lt.y);
+		if (baseS == 5 || baseS == 9 || baseS == 13)
+		Camera.main.transform.Translate (new Vector3 (0, -dft / 2, 0));
+
+	}
+
     void Update()
     {
         if (FindObjectsOfType<Row>().Length == 0 && avaibleColor != null)
         {
             avaibleColor = null;
-            //FindObjectOfType<HUDController>().changeScene("Game");
+            FindObjectOfType<HUDController>().changeScene("Game");
             PlayerPrefs.SetInt("phaseCount", PlayerPrefs.GetInt("phaseCount") + 1);
             if (moves != 0)
                 PlayerPrefs.SetInt("actualPoints", Mathf.RoundToInt((baseS * 4) - moves) + PlayerPrefs.GetInt("actualPoints"));
@@ -175,12 +187,6 @@ public class GameManager : MonoBehaviour
      * Base * 10  / jogadas;
      * 
      */
-    IEnumerator timerTilEnd(float time)
-    {
-        yield return new WaitForSeconds(time);
-        FindObjectOfType<HUDController>().changeScene("Submit");
-    }
-
     void InitColor()
     {
 		List<Color> colors = new List<Color>();
@@ -204,34 +210,18 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-
-        //PlayerPrefs.SetInt ("phaseCount",0);
-        //PlayerPrefs.SetInt ("actualPoints", 0);
-       // baseS = (PlayerPrefs.GetInt("phaseCount") <= 3) ? 3 :
-         //   (PlayerPrefs.GetInt("phaseCount") <= 6) ? 5 : (PlayerPrefs.GetInt("phaseCount") <= 9) ? 7 :
-           //     (PlayerPrefs.GetInt("phaseCount") <= 12) ? 9 : (PlayerPrefs.GetInt("phaseCount") <= 15) ? 11 :
-             //   (PlayerPrefs.GetInt("phaseCount") >= 18) ? 13 : 13;
-		baseS = 7;
-		//baseS =13;
-        //Debug.LogError((PlayerPrefs.GetInt("phaseCount") / 3) + ":" + PlayerPrefs.GetInt("phaseCount") + ":" + baseS);
+        baseS = (PlayerPrefs.GetInt("phaseCount") <= 3) ? 3 :
+            (PlayerPrefs.GetInt("phaseCount") <= 6) ? 5 : (PlayerPrefs.GetInt("phaseCount") <= 9) ? 7 :
+                (PlayerPrefs.GetInt("phaseCount") <= 12) ? 9 : (PlayerPrefs.GetInt("phaseCount") <= 15) ? 11 :
+                (PlayerPrefs.GetInt("phaseCount") >= 18) ? 13 : 13;
 		InitColor();
 		cameraFocus ();
         InstantiateTriangles(baseS, 0);
-		int t = ((numOfRows - 1) / 2);
-		string name = "Triangle:" + ((numOfRows - 1) / 2) + ":" + ((int)baseS - (2 * (t))) / 2;
-		Camera.main.transform.position = GameObject.Find(name).transform.position + new Vector3(0,0,-10);
-        res.Add(13, 9.04f);
-        res.Add(11, 7.73f);
-        res.Add(9, 6.55f);
-        res.Add(7, 5.28f);
-        res.Add(5, 4.07f);
-        res.Add(3, 2.82f);
-        //Camera.main.orthographicSize = res[baseS];
+		cameraPositioning ();
         timeLimit = baseS * 5;
-        //StartCoroutine(timerTilEnd(timeLimit));
 
 		for (int i = 0; i < numOfRows; i++) {
-			//if(checkIfCompleteRow(i,avaibleColor[i]))Application.LoadLevel("Game");
+			if(checkIfCompleteRow(i,avaibleColor[i]))Application.LoadLevel("Game");
 		}
 
     }	

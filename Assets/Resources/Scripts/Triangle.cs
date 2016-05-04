@@ -8,6 +8,7 @@ public class Triangle : Default {
     public int faixa;
 	void Awake() {
 		options = new List<GameObject>();
+		//Debug.Log("bu");
 	}
 
 	public override void OnTouch(object t)

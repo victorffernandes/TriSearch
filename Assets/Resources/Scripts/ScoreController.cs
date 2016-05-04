@@ -11,10 +11,9 @@ public class ScoreController : MonoBehaviour {
 
 	public Text namesList;
 	public Text scoreList;
-	public int godmode;
 	public string name;
 	public int score;
-	public string db_url = "http://trisearch.16mb.com/server/";
+	string db_url = "http://avellar.ml/trisearch/";
 	public bool isUpdating;
 	public bool isUpdatingScore;
 	private string[] scoresText;
@@ -23,8 +22,6 @@ public class ScoreController : MonoBehaviour {
 	void Awake() {
 		isUpdating = true;
 		isUpdatingScore = true;
-		db_url = "http://trisearch.16mb.com/server/";
-
 		error.GetComponent<Animator>().Play("ConnectionStatus_Loading");
 	}
 
@@ -75,11 +72,10 @@ public class ScoreController : MonoBehaviour {
 
 	public IEnumerator SaveScores() {
 		error.GetComponent<Animator>().Play("ConnectionStatus_Loading");
-		if (CheckConnection(db_url + "saveScore")) {
+		if (CheckConnection(db_url)) {	
 			WWWForm form = new WWWForm ();
 			form.AddField ("name", name);
 			form.AddField ("score", score);
-			form.AddField ("godmode", godmode);
 			WWW webRequest = new WWW (db_url + "saveScore", form);
 			yield return webRequest;
 		} else {
@@ -89,7 +85,7 @@ public class ScoreController : MonoBehaviour {
 	}
 
 	IEnumerator LoadScores() {
-		if (CheckConnection(db_url + "loadScore")) {
+		if (CheckConnection(db_url)) {
 			error.GetComponent<Animator> ().Play ("ConnectionStatus_Loading");
 			WWW webRequest = new WWW (db_url + "loadScore");
 			yield return webRequest;
@@ -97,7 +93,6 @@ public class ScoreController : MonoBehaviour {
 			isUpdating = false;
 			isUpdatingScore = true;
 		} else {
-			yield return null;
 			error.GetComponent<Animator> ().Play ("ConnectionStatus_Error");
 		}
 	}
